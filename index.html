@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>DOĞUM GÜNÜ</title>
+<style>
+body{
+    margin:0;
+    background:#ffd4e5;
+    font-family:Arial, sans-serif;
+    text-align:center;
+}
+
+.cake {
+    margin-top:80px;
+    position:relative;
+}
+
+.candle {
+    width:10px;
+    height:50px;
+    background:white;
+    margin:0 auto;
+    position:relative;
+}
+
+.flame {
+    width:12px;
+    height:20px;
+    background:orange;
+    border-radius:50%;
+    margin:0 auto;
+    opacity:0;
+    animation: flameOn 3s forwards;
+}
+
+@keyframes flameOn {
+    0%{opacity:0; transform:scale(0.1);}
+    100%{opacity:1; transform:scale(1);}
+}
+
+.text {
+    margin-top:40px;
+    font-size:28px;
+    font-weight:bold;
+    color:#b30059;
+}
+</style>
+</head>
+<body>
+
+<div class="cake">
+    <img src="https://i.imgur.com/Oj1h6q8.png" width="200">
+    <div class="candle">
+        <div class="flame"></div>
+    </div>
+</div>
+
+<div class="text">
+    DOĞUM GÜNÜN KUTLU OLSUN DOĞUM GÜNÜ KIZI
+</div>
+
+</body>
+</html>
