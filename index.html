@@ -1,64 +1,223 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<title>DOĞUM GÜNÜ</title>
-<style>
-body{
-    margin:0;
-    background:#ffd4e5;
-    font-family:Arial, sans-serif;
-    text-align:center;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ecrin'e Süper Doğum Günü Sürprizi! 🎉</title>
+    <style>
+        /* TEMEL STİLLER */
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            background-color: #0d1117; /* Koyu arka plan */
+            color: #ffffff;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
 
-.cake {
-    margin-top:80px;
-    position:relative;
-}
+        /* PASTA STİLLERİ */
+        .cake-container {
+            position: relative;
+            margin-bottom: 50px;
+            perspective: 1000px;
+        }
+        .cake {
+            width: 250px;
+            height: 100px;
+            background: #ff69b4; /* Sıcak Pembe */
+            border-radius: 50% / 20%;
+            position: relative;
+            box-shadow: 0 5px 0 0 #c71585; /* Gölge */
+            transform: scaleY(0); /* Başlangıçta görünmez */
+            animation: buildCake 2s forwards; /* Pasta yapım animasyonu */
+        }
 
-.candle {
-    width:10px;
-    height:50px;
-    background:white;
-    margin:0 auto;
-    position:relative;
-}
+        .cake::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #ffb6c1; /* Krem rengi */
+            border-radius: 50% / 20%;
+            top: -30px;
+            box-shadow: 0 4px 0 #e9a3b2;
+        }
 
-.flame {
-    width:12px;
-    height:20px;
-    background:orange;
-    border-radius:50%;
-    margin:0 auto;
-    opacity:0;
-    animation: flameOn 3s forwards;
-}
+        /* MUM STİLLERİ */
+        .candle-group {
+            position: absolute;
+            top: -65px;
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            opacity: 0;
+            animation: fadeIn 0.5s forwards 2.5s; /* Mumlar yavaşça gelsin */
+        }
+        .candle {
+            width: 8px;
+            height: 30px;
+            background: #ffffff;
+            border-radius: 5px;
+            position: relative;
+            transform-origin: bottom;
+            animation: glow 0.5s infinite alternate 3s; /* Mumun titremesi */
+        }
+        .flame {
+            width: 6px;
+            height: 15px;
+            background: orange;
+            border-radius: 50%;
+            position: absolute;
+            top: -10px;
+            left: 1px;
+            box-shadow: 0 0 5px yellow, 0 0 10px orange;
+            transform: scaleY(0); /* Başlangıçta yanmıyor */
+            animation: lightUp 0.5s forwards 3s; /* Yanmaya başlasın */
+        }
 
-@keyframes flameOn {
-    0%{opacity:0; transform:scale(0.1);}
-    100%{opacity:1; transform:scale(1);}
-}
+        /* MESAJ VE KONFETİ STİLLERİ */
+        #message {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #fce4ec; /* Açık Pembe */
+            opacity: 0;
+            margin-top: 30px;
+            text-shadow: 2px 2px 5px #000;
+            animation: fadeInMessage 1s forwards 4s; /* Mesaj animasyonu */
+        }
+        
+        /* KONFETİ ETKİSİ */
+        .confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+        }
 
-.text {
-    margin-top:40px;
-    font-size:28px;
-    font-weight:bold;
-    color:#b30059;
-}
-</style>
+        /* KEYFRAMES (ANIMASYONLAR) */
+        @keyframes buildCake {
+            to {
+                transform: scaleY(1);
+            }
+        }
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+        @keyframes lightUp {
+            to {
+                transform: scaleY(1);
+            }
+        }
+        @keyframes fadeInMessage {
+            to {
+                opacity: 1;
+            }
+        }
+        @keyframes glow {
+            from {
+                opacity: 0.9;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
 </head>
 <body>
 
-<div class="cake">
-    <img src="https://i.imgur.com/Oj1h6q8.png" width="200">
-    <div class="candle">
-        <div class="flame"></div>
+    <div class="cake-container">
+        <div class="cake">
+            <div class="candle-group">
+                <div class="candle"><div class="flame"></div></div>
+                <div class="candle"><div class="flame"></div></div>
+                <div class="candle"><div class="flame"></div></div>
+            </div>
+        </div>
     </div>
-</div>
 
-<div class="text">
-    DOĞUM GÜNÜN KUTLU OLSUN DOĞUM GÜNÜ KIZI
-</div>
+    <div id="message">DOĞUM GÜNÜN KUTLU OLSUN DOĞUM GÜNÜ KIZI SENİ!</div>
 
+    <canvas id="confetti" class="confetti-canvas"></canvas>
+
+    <script>
+        // Konfeti için basit bir JavaScript fonksiyonu (daha temiz olması için)
+        const canvas = document.getElementById('confetti');
+        const ctx = canvas.getContext('2d');
+        let W = window.innerWidth;
+        let H = window.innerHeight;
+        let maxConfettis = 100;
+        let confettis = [];
+        const colors = [
+            '#fce18a', '#ff726d', '#f43e6c', '#40b4e5', '#82e88a', '#9c73f3'
+        ];
+
+        canvas.width = W;
+        canvas.height = H;
+
+        function Confetti() {
+            this.x = Math.random() * W;
+            this.y = Math.random() * H - H;
+            this.size = (Math.random() * 8) + 3;
+            this.color = colors[Math.floor(Math.random() * colors.length)];
+            this.speed = (Math.random() * 3) + 1;
+            this.rotation = Math.random() * 360;
+            this.rotateSpeed = Math.random() * 5 - 2.5;
+        }
+
+        function drawConfetti() {
+            for (let i = 0; i < confettis.length; i++) {
+                let c = confettis[i];
+
+                ctx.save();
+                ctx.translate(c.x + c.size / 2, c.y + c.size / 2);
+                ctx.rotate(c.rotation * Math.PI / 180);
+
+                ctx.fillStyle = c.color;
+                ctx.fillRect(-c.size / 2, -c.size / 2, c.size, c.size);
+
+                ctx.restore();
+            }
+        }
+
+        function updateConfetti() {
+            for (let i = 0; i < confettis.length; i++) {
+                let c = confettis[i];
+                c.y += c.speed;
+                c.rotation += c.rotateSpeed;
+
+                // Ekran dışına çıkarsa yeniden başlat
+                if (c.y > H) {
+                    c.y = -c.size;
+                    c.x = Math.random() * W;
+                }
+            }
+        }
+
+        function render() {
+            ctx.clearRect(0, 0, W, H);
+            drawConfetti();
+            updateConfetti();
+            requestAnimationFrame(render);
+        }
+
+        // Konfetiyi mesaj göründükten sonra başlat (4 saniye sonra)
+        setTimeout(() => {
+            for (let i = 0; i < maxConfettis; i++) {
+                confettis.push(new Confetti());
+            }
+            render();
+        }, 4000); // 4 saniye sonra başla
+        
+    </script>
 </body>
 </html>
